@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router";
+import ZapShiftLogo from "../ZapShiftLogo/ZapShiftLogo";
 
 const Navbar = () => {
 
@@ -35,7 +36,7 @@ const Navbar = () => {
             {navItems}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <a className="btn btn-ghost text-xl"><ZapShiftLogo></ZapShiftLogo></a>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
