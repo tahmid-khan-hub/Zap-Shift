@@ -25,13 +25,11 @@ const iconMap = {
 };
 
 export default function ServicesCard({ title, description }) {
-  const isHighlighted = title === "Nationwide Delivery";
+//   const isHighlighted = title === "Nationwide Delivery";
 
   return (
     <div
-      className={`rounded-xl p-6 text-black flex flex-col items-center text-center shadow-md transition-transform duration-300 hover:scale-[1.02] ${
-        isHighlighted ? "bg-lime-200" : "bg-white"
-      }`}
+      className={`rounded-xl p-6 text-black bg-white flex flex-col items-center text-center shadow-md transition-transform duration-300 hover:scale-[1.02] hover:bg-lime-200`}
     >
       <div className="bg-lime-100 p-3 rounded-full mb-4">{iconMap[title]}</div>
       <h3 className="text-xl font-semibold mb-2 text-[#003B3B]">{title}</h3>
