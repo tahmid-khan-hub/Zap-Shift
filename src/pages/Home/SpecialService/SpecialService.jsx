@@ -34,13 +34,15 @@ const SpecialService = () => {
               alt={service.title}
               className="w-32 md:w-40 object-contain"
             />
-            <div>
-              <h3 className="text-xl md:text-2xl font-semibold text-[#012b27] mb-2">
-                {service.title}
-              </h3>
-              <p className="text-sm md:text-base text-gray-600">
-                {service.desc}
-              </p>
+            <div className="border-l-2 border-dashed">
+              <div className="ml-5">
+                <h3 className="text-xl md:text-2xl font-semibold text-[#012b27] mb-2">
+                  {service.title}
+                </h3>
+                <p className="text-sm md:text-base text-gray-600">
+                  {service.desc}
+                </p>
+              </div>
             </div>
           </div>
         ))}
