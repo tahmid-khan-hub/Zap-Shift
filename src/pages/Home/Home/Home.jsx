@@ -6,6 +6,7 @@ import SpecialService from '../SpecialService/SpecialService';
 import BeMerchant from '../BeMerchant/BeMerchant';
 import Delivery from '../Delivery/Delivery';
 import FaQ from '../FaQ/FaQ';
+import TestimonialCarousel from '../TestimonialCarousel/TestimonialCarousel';
 
 const Home = () => {
     return (
@@ -16,6 +17,7 @@ const Home = () => {
             <TrustedByBrands></TrustedByBrands>
             <SpecialService></SpecialService>
             <BeMerchant></BeMerchant>
+            <TestimonialCarousel></TestimonialCarousel>
             <FaQ></FaQ>
         </div>
     );
