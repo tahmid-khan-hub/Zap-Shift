@@ -32,7 +32,7 @@ const Delivery = () => {
   ];
 
   return (
-    <div className="my-16 py-12 px-4 lg:px-20 bg-[#f4f7f9]">
+    <div className="my-24 py-12 px-4 lg:px-20 bg-[#f4f7f9]">
       <div className=" mb-10">
         <h2 className="text-4xl font-bold">How it Works</h2>
       </div>
@@ -40,7 +40,7 @@ const Delivery = () => {
         {deliveryDetails.map((delivery, index) => (
           <div
             key={index}
-            className="p-6 border rounded-2xl shadow-md text-left bg-white hover:shadow-lg transition"
+            className="p-6 rounded-2xl shadow-md text-left bg-white hover:shadow-lg transition"
           >
             <div className="mb-4">{delivery.icon}</div>
             <h3 className="text-xl font-semibold mb-2">{delivery.title}</h3>
