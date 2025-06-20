@@ -12,7 +12,7 @@ const brands = [casio, amazon, moonstar, starplus, startpeople, randstad];
 export default function TrustedByBrands() {
   return (
     <section className="bg-[#f1f4f5] py-12 my-12 rounded-xl">
-      <div className="text-center mb-8">
+      <div className="text-center mb-12">
         <h2 className="text-xl md:text-2xl font-semibold text-[#003B3B]">
           We've helped thousands of sales teams
         </h2>
@@ -29,12 +29,12 @@ export default function TrustedByBrands() {
             key={index}
             src={logo}
             alt={`brand-${index}`}
-            className="h-10 mx-8 object-contain"
+            className="h-10 mx-[90px] object-contain"
           />
         ))}
       </Marquee>
 
-      <div className="border-t border-dashed border-[#0f5454] mt-10 mx-auto w-[90%]"></div>
+      <div className="border-t border-dashed border-[#0f5454] mt-16 mx-auto w-[90%]"></div>
     </section>
   );
 }
