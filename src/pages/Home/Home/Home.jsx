@@ -4,11 +4,13 @@ import ServicesSection from '../Services/ServicesSection';
 import TrustedByBrands from '../TrustedBrands/TrustedByBrands';
 import SpecialService from '../SpecialService/SpecialService';
 import BeMerchant from '../BeMerchant/BeMerchant';
+import Delivery from '../Delivery/Delivery';
 
 const Home = () => {
     return (
         <div>
             <Banner></Banner>
+            <Delivery></Delivery>
             <ServicesSection></ServicesSection>
             <TrustedByBrands></TrustedByBrands>
             <SpecialService></SpecialService>
