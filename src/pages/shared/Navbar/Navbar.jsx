@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import ZapShiftLogo from "../ZapShiftLogo/ZapShiftLogo";
 
 const Navbar = () => {
@@ -7,6 +7,7 @@ const Navbar = () => {
     const navItems = <>
         <li><NavLink to="/">Home</NavLink></li>
         <li><NavLink to="/about">About Us</NavLink></li>
+        <li><NavLink to="/sendParcel">Send Parcel</NavLink></li>
         <li><NavLink to="/coverage">Coverage</NavLink></li>
     </>
   return (
@@ -45,7 +46,7 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <a className="btn">Button</a>
+        <Link to="/login"><a className="btn bg-lime-300">Login</a></Link>
       </div>
     </div>
   );
