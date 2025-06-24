@@ -2,26 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import UseAuth from "../../hooks/UseAuth";
 import { useLoaderData } from "react-router";
+import UseAuth from "../../hooks/UseAuth";
+import UseAxiosSecure from "../../hooks/UseAxiosSecure";
+import Swal from "sweetalert2";
 
 const SendParcel = () => {
-  const serviceCenter = useLoaderData(); // your JSON array of service centers
-//   const { user } = UseAuth();
-//   const userName = user?.displayName || "Unknown";
+  const serviceCenter = useLoaderData();
+  const { user } = UseAuth();
+  const axiosSecure = UseAxiosSecure();
 
-  // Extract unique regions for dropdowns
   const regions = Array.from(new Set(serviceCenter.map((sc) => sc.region)));
 
-  // Sender state
   const [senderRegion, setSenderRegion] = useState("");
   const [senderCenters, setSenderCenters] = useState([]);
-
-  // Receiver state
   const [receiverRegion, setReceiverRegion] = useState("");
   const [receiverCenters, setReceiverCenters] = useState([]);
 
-  // Update sender centers when senderRegion changes
   useEffect(() => {
     if (senderRegion) {
       setSenderCenters(
@@ -32,7 +29,6 @@ const SendParcel = () => {
     }
   }, [senderRegion, serviceCenter]);
 
-  // Update receiver centers when receiverRegion changes
   useEffect(() => {
     if (receiverRegion) {
       setReceiverCenters(
@@ -48,18 +44,42 @@ const SendParcel = () => {
   const [submittedData, setSubmittedData] = useState(null);
 
   const { register, handleSubmit, watch, reset } = useForm();
-
   const watchType = watch("type");
 
   const calculateCost = (data) => {
-    let base = data.type === "document" ? 50 : 100;
-    if (data.type === "non-document" && data.weight) {
-      base += parseFloat(data.weight) * 10;
+    const type = data.type;
+    const weight = parseFloat(data.weight || 0);
+    const isSameCenter =
+      data.receiverServiceCenter === data.senderServiceCenter;
+
+    if (type === "document") {
+      return isSameCenter ? 60 : 80;
     }
-    if (data.receiverServiceCenter !== data.senderServiceCenter) {
-      base += 40;
+
+    if (type === "non-document") {
+      if (weight <= 3) {
+        return isSameCenter ? 110 : 150;
+      } else {
+        const base = isSameCenter ? 110 : 150;
+        const extra = weight * 40;
+        return isSameCenter ? base + extra : base + extra + 40;
+      }
     }
-    return base;
+
+    return 0;
+  };
+
+  const getFormattedDateTime = () => {
+    return new Date().toLocaleString("en-BD", {
+      timeZone: "Asia/Dhaka",
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
   };
 
   const onSubmit = (data) => {
@@ -73,9 +93,29 @@ const SendParcel = () => {
   const handleConfirm = () => {
     const finalParcel = {
       ...submittedData,
-      creation_date: new Date().toISOString(),
+      email: user?.email || "unknown",
+      payment_status: "unpaid",
+      delivery_status: "not_collected",
+      tracking_id: `TRK-${Date.now()}`,
+      creation_date: getFormattedDateTime(),
     };
-    console.log("Parcel saved:", finalParcel); // replace with real DB logic
+
+    console.log("Parcel saved:", finalParcel);
+
+    // DB/API logic
+    axiosSecure.post("/parcels", finalParcel).then((res) => {
+      console.log(res.data);
+      if (res.data.insertedId) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "parcel added successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
+
     toast.success("Parcel submitted and saved!");
     reset();
     setShowConfirm(false);
@@ -130,23 +170,16 @@ const SendParcel = () => {
           <div className="border p-3 rounded-lg">
             <h3 className="text-lg font-semibold mb-2">Sender Info</h3>
             <div className="flex flex-col space-y-4">
-              {/* Sender Name */}
               <input
-                // defaultValue={userName}
-                // readOnly
                 className="input"
                 placeholder="Sender Name"
                 {...register("senderName")}
               />
-
-              {/* Sender Contact */}
               <input
                 {...register("senderContact", { required: true })}
                 className="input"
                 placeholder="Sender Contact"
               />
-
-              {/* Sender Region Dropdown */}
               <select
                 value={senderRegion}
                 onChange={(e) => setSenderRegion(e.target.value)}
@@ -160,8 +193,6 @@ const SendParcel = () => {
                   </option>
                 ))}
               </select>
-
-              {/* Sender Service Center Dropdown */}
               <select
                 {...register("senderServiceCenter", { required: true })}
                 className="input"
@@ -175,19 +206,17 @@ const SendParcel = () => {
                   </option>
                 ))}
               </select>
-
-              {/* Sender Address & Instruction flex for large, stacked on mobile */}
-                <input
-                  {...register("senderAddress", { required: true })}
-                  className="input"
-                  placeholder="Sender Address"
-                />
-                <textarea
-                  {...register("pickupInstruction", { required: true })}
-                  className="input resize-y min-h-[100px]"
-                  placeholder="Pickup Instruction"
-                  rows={3}
-                />
+              <input
+                {...register("senderAddress", { required: true })}
+                className="input"
+                placeholder="Sender Address"
+              />
+              <textarea
+                {...register("pickupInstruction", { required: true })}
+                className="input resize-y min-h-[100px]"
+                placeholder="Pickup Instruction"
+                rows={3}
+              />
             </div>
           </div>
 
@@ -205,8 +234,6 @@ const SendParcel = () => {
                 className="input"
                 placeholder="Receiver Contact"
               />
-
-              {/* Receiver Region Dropdown */}
               <select
                 value={receiverRegion}
                 onChange={(e) => setReceiverRegion(e.target.value)}
@@ -220,8 +247,6 @@ const SendParcel = () => {
                   </option>
                 ))}
               </select>
-
-              {/* Receiver Service Center Dropdown */}
               <select
                 {...register("receiverServiceCenter", { required: true })}
                 className="input"
@@ -235,19 +260,17 @@ const SendParcel = () => {
                   </option>
                 ))}
               </select>
-
-              {/* Receiver Address & Instruction flex for large, stacked on mobile */}
-                <input
-                  {...register("receiverAddress", { required: true })}
-                  className="input "
-                  placeholder="Receiver Address"
-                />
-                <textarea
-                  {...register("deliveryInstruction", { required: true })}
-                  className="input resize-y min-h-[100px]"
-                  placeholder="Delivery Instruction"
-                  rows={3}
-                />
+              <input
+                {...register("receiverAddress", { required: true })}
+                className="input"
+                placeholder="Receiver Address"
+              />
+              <textarea
+                {...register("deliveryInstruction", { required: true })}
+                className="input resize-y min-h-[100px]"
+                placeholder="Delivery Instruction"
+                rows={3}
+              />
             </div>
           </div>
         </div>
