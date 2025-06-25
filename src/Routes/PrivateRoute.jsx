@@ -1,11 +1,11 @@
 import React from 'react';
 import UseAuth from '../hooks/UseAuth';
-import { Navigate , uselocation} from 'react-router';
+import { Navigate , useLocation} from 'react-router';
 
 const PrivateRoute = ({children}) => {
 
     const { user, loading } = UseAuth();
-    const location = uselocation();
+    const location = useLocation();
 
     if(loading) return <span className="loading loading-ring loading-xl"></span>
 

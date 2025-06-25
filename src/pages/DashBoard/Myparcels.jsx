@@ -4,11 +4,14 @@ import { FaEye, FaTrashAlt, FaMoneyCheckAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import UseAuth from "../../hooks/UseAuth";
 import UseAxiosSecure from "../../hooks/UseAxiosSecure";
+import { useNavigate } from "react-router";
 
 const Myparcels = () => {
   const { user } = UseAuth()
   const axiosSecure = UseAxiosSecure()
   const queryClient = useQueryClient();
+
+  const navigate = useNavigate();
 
   const { data: parcels = [], refetch } = useQuery({
     queryKey: ["my-parcel", user.email],
@@ -24,6 +27,10 @@ const Myparcels = () => {
     const date = new Date(isoDate);
     return date.toLocaleDateString("en-GB");
   };
+
+  const handlePay = (id) =>{
+    navigate(`/dashboard/payment/${id}`)
+  }
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -90,7 +97,7 @@ const Myparcels = () => {
                   <FaEye />
                 </button>
                 {parcel.payment_status === "unpaid" && (
-                  <button className="btn btn-sm btn-warning text-white">
+                  <button onClick={()=> handlePay(parcel._id)} className="btn btn-sm btn-warning text-white">
                     <FaMoneyCheckAlt />
                   </button>
                 )}
