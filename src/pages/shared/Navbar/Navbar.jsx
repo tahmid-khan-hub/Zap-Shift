@@ -4,7 +4,15 @@ import ZapShiftLogo from "../ZapShiftLogo/ZapShiftLogo";
 import UseAuth from "../../../hooks/UseAuth";
 
 const Navbar = () => {
-  const {user} = UseAuth()
+  const {user, logOut} = UseAuth()
+
+  const handleLogOut = () =>{
+    logOut()
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => console.log(err))
+  }
 
     const navItems = <>
         <li><NavLink to="/">Home</NavLink></li>
@@ -53,7 +61,7 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <Link to="/login"><a className="btn bg-lime-300">Login</a></Link>
+        {user ? <a onClick={handleLogOut} className="btn bg-lime-400">Log out</a> : <Link to="/login"><a className="btn bg-lime-400">Login</a></Link>}
       </div>
     </div>
   );
