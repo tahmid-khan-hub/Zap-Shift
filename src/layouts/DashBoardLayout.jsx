@@ -1,4 +1,5 @@
 import React from "react";
+import Myparcels from "../pages/DashBoard/Myparcels";
 
 const DashBoardLayout = () => {
   return (
@@ -31,7 +32,8 @@ const DashBoardLayout = () => {
           
         </div>
         {/* Page content here */}
-        Content
+        {/* Content */}
+        <Myparcels></Myparcels>
       </div>
       <div className="drawer-side">
         <label
