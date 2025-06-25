@@ -1,5 +1,7 @@
 import React from "react";
 import Myparcels from "../pages/DashBoard/Myparcels";
+import ZapShiftLogo from "../pages/shared/ZapShiftLogo/ZapShiftLogo";
+import { NavLink, Outlet } from "react-router";
 
 const DashBoardLayout = () => {
   return (
@@ -32,8 +34,7 @@ const DashBoardLayout = () => {
           
         </div>
         {/* Page content here */}
-        {/* Content */}
-        <Myparcels></Myparcels>
+        <Outlet></Outlet>
       </div>
       <div className="drawer-side">
         <label
@@ -43,11 +44,12 @@ const DashBoardLayout = () => {
         ></label>
         <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
           {/* Sidebar content here */}
+          <ZapShiftLogo></ZapShiftLogo>
           <li>
-            <a>Sidebar Item s1</a>
+            <NavLink to="/">Home</NavLink>
           </li>
           <li>
-            <a>Sidebar Item s2</a>
+            <NavLink to="/dashboard/myParcels">My parcels</NavLink>
           </li>
         </ul>
       </div>
