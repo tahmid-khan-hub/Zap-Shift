@@ -1,31 +1,35 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import UseAxiosSecure from "../../hooks/UseAxiosSecure";
+import UseAuth from "../../hooks/UseAuth";
+import Swal from "sweetalert2";
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const {parcelId} = useParams();
+  const { parcelId } = useParams();
+  const { user } = UseAuth();
   console.log(parcelId);
-  const axiosSecure = UseAxiosSecure()
+  const axiosSecure = UseAxiosSecure();
+  const navigate = useNavigate()
 
   const [error, setError] = useState("");
 
-  const {isPending, data: parcelInfo = {}} = useQuery({
-    queryKey: ['parcels', parcelId],
-    queryFn: async() =>{
-      const res = await axiosSecure.get(`/parcels/${parcelId}`)
+  const { isPending, data: parcelInfo = {} } = useQuery({
+    queryKey: ["parcels", parcelId],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/parcels/${parcelId}`);
       return res.data;
-    }
-  })
+    },
+  });
 
-  if(isPending) return "...loading"
+  if (isPending) return "...loading";
 
   console.log(parcelInfo);
-  const amount = parcelInfo.cost
-  const amountInCents = amount*100;
+  const amount = parcelInfo.cost;
+  const amountInCents = amount * 100;
   console.log(amountInCents);
 
   const handleSubmit = async (e) => {
@@ -37,6 +41,7 @@ const PaymentForm = () => {
 
     if (!card) return;
 
+    // 1. validate card
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card,
@@ -47,26 +52,57 @@ const PaymentForm = () => {
       console.log("payment -> ", paymentMethod);
     }
 
-    // payment intent (create)
-    const res = await axiosSecure.post('/create-payment-intent', {
+    // 2. payment intent (create)
+    const res = await axiosSecure.post("/create-payment-intent", {
       amountInCents,
-      parcelId
-    })
+      parcelId,
+    });
 
     const clientSecret = res.data.clientSecret;
 
+    // 3. confirm payment
     const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_methos: {
+      payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: '',
+          name: user.displayName,
+          email: user.email,
         },
       },
     });
 
-    if(result.error) console.log(result.error.message);
-    else{
-      if(result.paymentIntent.status === 'succeeded') console.log('payment succeed');
+    if (result.error) setError(result.error.message);
+    else {
+      setError("");
+      if (result.paymentIntent.status === "succeeded") {
+        console.log("payment succeed");
+        console.log(result);
+
+        // 4. mark parcel paid also create payment history
+        const paymentData = {
+          parcelId,
+          email: user.email,
+          amount,
+          transactionId: result.paymentIntent.id,
+        };
+
+        const paymentResponse = await axiosSecure.post(
+          "/payments",
+          paymentData
+        );
+
+        if (paymentResponse.data.insertedId) {
+          console.log("payment successful");
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "payment successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          navigate('dashboard/myParcels')
+        }
+      }
     }
 
     console.log(res);
@@ -82,9 +118,7 @@ const PaymentForm = () => {
         <button type="submit" disabled={!stripe} className="btn w-full ">
           Pay {amount}
         </button>
-        {
-            error && <p className="text-red-500">{error}</p>
-        }
+        {error && <p className="text-red-500">{error}</p>}
       </form>
     </div>
   );

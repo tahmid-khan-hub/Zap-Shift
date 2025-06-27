@@ -95,6 +95,7 @@ const SendParcel = () => {
       ...submittedData,
       email: user?.email || "unknown",
       payment_status: "unpaid",
+      cost,
       delivery_status: "not_collected",
       tracking_id: `TRK-${Date.now()}`,
       creation_date: getFormattedDateTime(),
