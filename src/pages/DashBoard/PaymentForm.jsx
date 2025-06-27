@@ -100,7 +100,7 @@ const PaymentForm = () => {
             showConfirmButton: false,
             timer: 1500,
           });
-          navigate('dashboard/myParcels')
+          navigate('/myParcels')
         }
       }
     }

@@ -2,6 +2,13 @@ import React from "react";
 import Myparcels from "../pages/DashBoard/Myparcels";
 import ZapShiftLogo from "../pages/shared/ZapShiftLogo/ZapShiftLogo";
 import { NavLink, Outlet } from "react-router";
+import {
+  FaHome,
+  FaBox,
+  FaMoneyCheckAlt,
+  FaMapMarkedAlt,
+  FaUserEdit,
+} from "react-icons/fa";
 
 const DashBoardLayout = () => {
   return (
@@ -31,7 +38,6 @@ const DashBoardLayout = () => {
             </label>
           </div>
           <div className="mx-2 flex-1 px-2 lg:hidden">DashBoard</div>
-          
         </div>
         {/* Page content here */}
         <Outlet></Outlet>
@@ -46,10 +52,29 @@ const DashBoardLayout = () => {
           {/* Sidebar content here */}
           <ZapShiftLogo></ZapShiftLogo>
           <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/">
+              <FaHome className="mr-2" /> Home
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/dashboard/myParcels">My parcels</NavLink>
+            <NavLink to="/dashboard/myParcels">
+              <FaBox className="mr-2" /> My Parcels
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/paymentHistory">
+              <FaMoneyCheckAlt className="mr-2" /> Payment History
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/track">
+              <FaMapMarkedAlt className="mr-2" /> Track a Package
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/profile">
+              <FaUserEdit className="mr-2" /> Update Profile
+            </NavLink>
           </li>
         </ul>
       </div>
