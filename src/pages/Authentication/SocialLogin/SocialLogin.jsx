@@ -1,27 +1,44 @@
 import React from "react";
 import UseAuth from "../../../hooks/UseAuth";
 import { useLocation, useNavigate } from "react-router";
+import UseAxios from "../../../hooks/UseAxios";
 
 const SocialLogin = () => {
+  const { signInWithGoogle } = UseAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from || "/";
+  const axiosInstance = UseAxios();
 
-    const { signInWithGoogle } = UseAuth();
-    const location = useLocation()
-    const navigate = useNavigate();
-    const from = location.state?.from || '/'
+  const handleGoogleSignIn = () => {
+    signInWithGoogle()
+      .then( async(res) => {
+        const user = res.user;
+        console.log(res);
 
-    const handleGoogleSignIn = () =>{
-        signInWithGoogle()
-        .then(res =>{
-          console.log(res);
-          navigate(from)
-        })
-        .catch(err => console.log(err))
-    }
+        // user info in db
+        const userInfo = {
+          email: user.email,
+          role: "user", // default role
+          created_at: new Date().toISOString(),
+          last_log_in: new Date().toISOString(),
+        };
+
+        const result = await axiosInstance.post('/users', userInfo)
+        console.log(result, "user update info social");
+
+        navigate(from);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="text-center">
       <p>OR</p>
-      <button onClick={handleGoogleSignIn} className="btn w-full bg-white text-black border-lime-600 mb-11">
+      <button
+        onClick={handleGoogleSignIn}
+        className="btn w-full bg-white text-black border-lime-600 mb-11"
+      >
         <svg
           aria-label="Google logo"
           width="16"
