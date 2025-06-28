@@ -19,6 +19,7 @@ const Navbar = () => {
         <li><NavLink to="/about">About Us</NavLink></li>
         <li><NavLink to="/sendParcel">Send Parcel</NavLink></li>
         <li><NavLink to="/coverage">Coverage</NavLink></li>
+        <li><NavLink to="/beARider">Be A Rider</NavLink></li>
         {
           user && <><li><NavLink to="/dashboard">DashBoard</NavLink></li>
           
@@ -53,7 +54,7 @@ const Navbar = () => {
             {navItems}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl"><ZapShiftLogo></ZapShiftLogo></a>
+        <span className="btn btn-ghost text-xl"><ZapShiftLogo></ZapShiftLogo></span>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
