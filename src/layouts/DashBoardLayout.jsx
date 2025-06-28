@@ -9,6 +9,7 @@ import {
   FaMapMarkedAlt,
   FaUserEdit,
 } from "react-icons/fa";
+import { FaMotorcycle, FaHourglassHalf } from "react-icons/fa";
 
 const DashBoardLayout = () => {
   return (
@@ -74,6 +75,16 @@ const DashBoardLayout = () => {
           <li>
             <NavLink to="/dashboard/profile">
               <FaUserEdit className="mr-2" /> Update Profile
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/activeRiders">
+              <FaMotorcycle className="mr-2" /> Active Riders
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/pendingRiders">
+              <FaHourglassHalf className="mr-2" /> Pending Riders
             </NavLink>
           </li>
         </ul>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import UseAuth from "../../../hooks/UseAuth";
+import UseAxiosSecure from "../../../hooks/UseAxiosSecure";
 
 const BeARider = () => {
   const { user } = UseAuth()
@@ -11,9 +12,11 @@ const BeARider = () => {
     handleSubmit,
     setValue,
     watch,
-    reset,
+    // reset,
     formState: { errors },
   } = useForm();
+
+  const axiosSecure = UseAxiosSecure()
 
   const [serviceCenters, setServiceCenters] = useState([]);
   const [regions, setRegions] = useState([]);
@@ -50,21 +53,21 @@ const BeARider = () => {
   const onSubmit = async (data) => {
     const finalData = {
       ...data,
+      name: user.displayName || "",
+      email: user.email || "",
+      created_at: new Date().toISOString(),
       status: "pending",
     };
 
-    // try {
-    //   const res = await axios.post("/api/riderApplications", finalData);
-    //   if (res.data.success) {
-    //     alert("Application submitted successfully!");
-    //     reset();
-    //   } else {
-    //     alert("Failed to submit application.");
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    //   alert("Server error occurred.");
-    // }
+    console.log(finalData);
+
+    axiosSecure.post('/riders', finalData)
+    .then(res =>{
+        if(res.data.insertedId){
+            alert('data saved in backend')
+        }
+    })
+    
   };
 
   return (
