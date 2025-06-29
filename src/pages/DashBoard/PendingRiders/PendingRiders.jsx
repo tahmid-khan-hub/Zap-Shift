@@ -22,7 +22,7 @@ const PendingRiders = () => {
 
   if (isPending) return <div className="p-6">Loading...</div>;
 
-  const handleAction = async (id, status) => {
+  const handleAction = async (id, status, email) => {
     const confirm = await Swal.fire({
       title: `Are you sure?`,
       text: `You want to ${
@@ -39,7 +39,7 @@ const PendingRiders = () => {
 
     if (confirm.isConfirmed) {
       try {
-        const res = await axiosSecure.patch(`/riders/${id}/status`, { status });
+        const res = await axiosSecure.patch(`/riders/${id}/status`, { status , email});
         if (res.data.modifiedCount > 0) {
           Swal.fire(
             `${status === "approved" ? "Approved" : "Rejected"}!`,
@@ -148,13 +148,13 @@ const PendingRiders = () => {
             </div>
             <div className="flex justify-end gap-3 mt-6">
               <button
-                onClick={() => handleAction(selectedRider._id, "approved")}
+                onClick={() => handleAction(selectedRider._id, "approved", selectedRider.email)}
                 className="btn btn-success btn-sm"
               >
                 <FaCheckCircle className="mr-1" /> Approve
               </button>
               <button
-                onClick={() => handleAction(selectedRider._id, "rejected")}
+                onClick={() => handleAction(selectedRider._id, "rejected", selectedRider.email)}
                 className="btn btn-error btn-sm"
               >
                 <FaTimesCircle className="mr-1" /> Reject

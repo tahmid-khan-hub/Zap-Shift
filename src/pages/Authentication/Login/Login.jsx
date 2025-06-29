@@ -69,7 +69,7 @@ const Login = () => {
           </div>
 
           <p className="text-lime-500 font-semibold btn-link">
-            <Link to="/register">Click here to Register</Link>
+            <Link state={{from}} to="/register">Click here to Register</Link>
           </p>
 
           <button className="btn bg-lime-400 mt-4">Login</button>

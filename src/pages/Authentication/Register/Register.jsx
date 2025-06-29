@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import UseAuth from "../../../hooks/UseAuth";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import axios from "axios";
@@ -16,6 +16,9 @@ const Register = () => {
   const { createUser , updateUserProfile } = UseAuth();
   const axiosInstance = UseAxios()
   const [profilePic, setProfilePic] = useState('')
+    const location = useLocation()
+    const navigate = useNavigate()
+    const from = location.state?.from || '/'
 
   const onSubmit = (data) => {
     console.log(data);
@@ -40,7 +43,10 @@ const Register = () => {
           photoURL: profilePic
         }
         updateUserProfile(userProfile)
-        .then(() => {console.log('profile pic updated');})
+        .then(() => {
+          console.log('profile pic updated');
+          navigate(from)
+        })
         .catch(err => {console.log(err);})
 
       })
