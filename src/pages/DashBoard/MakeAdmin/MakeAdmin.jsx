@@ -9,35 +9,47 @@ const MakeAdmin = () => {
   const axiosSecure = UseAxiosSecure();
   const [searchEmail, setSearchEmail] = useState("");
 
-  // Query to search users by email
-  const { data: users = [], refetch, isFetching} = useQuery({
-    queryKey: ["search-users", searchEmail],
-    enabled: !!searchEmail,
+  // Query to fetch users by email
+  const {
+    data: users = [],
+    refetch,
+    isFetching,
+  } = useQuery({
+    queryKey: ["search-users"],
+    enabled: false, // We fetch manually after setting email
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/search?email=${searchEmail}`);
       return res.data;
     },
   });
 
-  // Handle search submit
-  const onSubmit = (data) => {
+  // Handle search form submit
+  const onSubmit = async (data) => {
     setSearchEmail(data.email);
+    refetch();
+    reset(); // optional: reset form input
   };
 
-  // Update role (admin/user)
+  // Handle admin/user role toggle
   const handleRoleChange = async (id, role) => {
     try {
       const res = await axiosSecure.patch(`/user/${id}/role`, { role });
+
       if (res.data.modifiedCount > 0) {
-        Swal.fire("Success", `User role updated to ${role}`, "success");
-        refetch(); // re-fetch to reflect changes
-      }
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: `User role updated to ${role}`,
+        });
+        refetch();
+      } 
     } catch (error) {
-      Swal.fire(
-        "Error",
-        error?.response?.data?.message || "Failed to update role",
-        "error"
-      );
+      console.error("Error updating role:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error?.response?.data?.message || "Failed to update role",
+      });
     }
   };
 
@@ -53,12 +65,12 @@ const MakeAdmin = () => {
           {...register("email")}
           className="input input-bordered w-full max-w-sm"
         />
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn bg-green-400">
           Search
         </button>
       </form>
 
-      {/* Search Result */}
+      {/* Search Result Table */}
       <div className="overflow-x-auto">
         <table className="table table-zebra w-full">
           <thead>
@@ -72,7 +84,9 @@ const MakeAdmin = () => {
           <tbody>
             {isFetching ? (
               <tr>
-                <td colSpan={4}>Loading...</td>
+                <td colSpan={4} className="text-center">
+                  Loading...
+                </td>
               </tr>
             ) : users.length === 0 ? (
               <tr>
