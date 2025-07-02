@@ -8,6 +8,7 @@ import {
   FaMoneyCheckAlt,
   FaMapMarkedAlt,
   FaUserEdit,
+  FaUserPlus,
 } from "react-icons/fa";
 import { FaMotorcycle, FaHourglassHalf } from "react-icons/fa";
 import { FaUserShield } from "react-icons/fa";
@@ -82,7 +83,7 @@ const DashBoardLayout = () => {
             </NavLink>
           </li>
 
-          {!roleLoading && role === 'admin' &&
+          {!roleLoading && role === "admin" && (
             <>
               <li>
                 <NavLink to="/dashboard/activeRiders">
@@ -99,8 +100,13 @@ const DashBoardLayout = () => {
                   <FaUserShield className="mr-2" /> Make Admin
                 </NavLink>
               </li>
+              <li>
+                <NavLink to="/dashboard/assignRider">
+                  <FaUserPlus className="mr-2" /> Assign Rider
+                </NavLink>
+              </li>
             </>
-          }
+          )}
         </ul>
       </div>
     </div>

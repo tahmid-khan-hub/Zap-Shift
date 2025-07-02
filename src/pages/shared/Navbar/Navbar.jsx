@@ -62,6 +62,7 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
+        {user && <p className="mr-2">{user.displayName}</p>}
         {user ? <a onClick={handleLogOut} className="btn bg-lime-400">Log out</a> : <Link to="/login"><a className="btn bg-lime-400">Login</a></Link>}
       </div>
     </div>
