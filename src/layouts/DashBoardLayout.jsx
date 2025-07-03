@@ -11,6 +11,7 @@ import {
   FaUserPlus,
   FaClock,
   FaCheckCircle,
+  FaWallet,
 } from "react-icons/fa";
 import { FaMotorcycle, FaHourglassHalf } from "react-icons/fa";
 import { FaUserShield } from "react-icons/fa";
@@ -93,6 +94,12 @@ const DashBoardLayout = () => {
                   <FaClock className="mr-2" /> Pending Deliveries
                 </NavLink>
               </li>
+              <li>
+                <NavLink to="/dashboard/myEarnings">
+                  <FaWallet className="mr-2" /> My Earnings
+                </NavLink>
+              </li>
+
               <li>
                 <NavLink to="/dashboard/completedDeliveries">
                   <FaCheckCircle className="mr-2" /> Completed Deliveries
