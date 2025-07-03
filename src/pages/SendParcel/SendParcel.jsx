@@ -99,6 +99,7 @@ const SendParcel = () => {
       delivery_status: "not_collected",
       tracking_id: `TRK-${Date.now()}`,
       creation_date: getFormattedDateTime(),
+      cashed_out: false,
     };
 
     console.log("Parcel saved:", finalParcel);

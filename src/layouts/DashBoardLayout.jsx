@@ -9,6 +9,8 @@ import {
   FaMapMarkedAlt,
   FaUserEdit,
   FaUserPlus,
+  FaClock,
+  FaCheckCircle,
 } from "react-icons/fa";
 import { FaMotorcycle, FaHourglassHalf } from "react-icons/fa";
 import { FaUserShield } from "react-icons/fa";
@@ -83,6 +85,23 @@ const DashBoardLayout = () => {
             </NavLink>
           </li>
 
+          {/* riders link */}
+          {!roleLoading && role === "rider" && (
+            <>
+              <li>
+                <NavLink to="/dashboard/pendingDeliveries">
+                  <FaClock className="mr-2" /> Pending Deliveries
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/completedDeliveries">
+                  <FaCheckCircle className="mr-2" /> Completed Deliveries
+                </NavLink>
+              </li>
+            </>
+          )}
+
+          {/* admin links */}
           {!roleLoading && role === "admin" && (
             <>
               <li>
