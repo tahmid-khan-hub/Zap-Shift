@@ -3,9 +3,13 @@ import { FaCheckCircle, FaTimesCircle, FaEye } from "react-icons/fa";
 import UseAxiosSecure from "../../../hooks/UseAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import UseAuth from "../../../hooks/UseAuth";
+import useTrackingLogger from "../../../hooks/useTrackingLogger";
 
 const PendingRiders = () => {
   const axiosSecure = UseAxiosSecure();
+  const logTracking = useTrackingLogger();
+  const { user } = UseAuth();
   const [selectedRider, setSelectedRider] = useState(null);
 
   const {
@@ -39,8 +43,20 @@ const PendingRiders = () => {
 
     if (confirm.isConfirmed) {
       try {
-        const res = await axiosSecure.patch(`/riders/${id}/status`, { status , email});
+        const res = await axiosSecure.patch(`/riders/${id}/status`, {
+          status,
+          email,
+        });
         if (res.data.modifiedCount > 0) {
+          await logTracking({
+            trackingId: `RIDER-${id}`,
+            status: status === "approved" ? "rider_approved" : "rider_rejected",
+            details: `${status === "approved" ? "Approved" : "Rejected"} by ${
+              user?.displayName || "admin"
+            }`,
+            updated_by: user?.email || "system",
+          });
+
           Swal.fire(
             `${status === "approved" ? "Approved" : "Rejected"}!`,
             `The rider has been ${status}.`,
@@ -148,13 +164,25 @@ const PendingRiders = () => {
             </div>
             <div className="flex justify-end gap-3 mt-6">
               <button
-                onClick={() => handleAction(selectedRider._id, "approved", selectedRider.email)}
+                onClick={() =>
+                  handleAction(
+                    selectedRider._id,
+                    "approved",
+                    selectedRider.email
+                  )
+                }
                 className="btn btn-success btn-sm"
               >
                 <FaCheckCircle className="mr-1" /> Approve
               </button>
               <button
-                onClick={() => handleAction(selectedRider._id, "rejected", selectedRider.email)}
+                onClick={() =>
+                  handleAction(
+                    selectedRider._id,
+                    "rejected",
+                    selectedRider.email
+                  )
+                }
                 className="btn btn-error btn-sm"
               >
                 <FaTimesCircle className="mr-1" /> Reject

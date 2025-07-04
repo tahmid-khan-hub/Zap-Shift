@@ -3,11 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { FaUserPlus } from "react-icons/fa";
 import Modal from "react-modal";
 import UseAxiosSecure from "../../../hooks/UseAxiosSecure";
+import UseAuth from "../../../hooks/UseAuth";
+import useTrackingLogger from "../../../hooks/useTrackingLogger";
 
-Modal.setAppElement("#root"); // important for accessibility
+Modal.setAppElement("#root");
 
 const AssignRider = () => {
   const axiosSecure = UseAxiosSecure();
+  const logTracking = useTrackingLogger();
+  const { user } = UseAuth(); 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
@@ -76,6 +80,13 @@ const AssignRider = () => {
         parcelId: selectedParcel._id,
         riderId: selectedRiderId,
         riderEmail,
+      });
+
+      await logTracking({
+        trackingId: selectedParcel.tracking_id,
+        status: "rider_assigned",
+        details: `Assigned to ${riderEmail}`,
+        updated_by: user?.email || "system",
       });
       alert("Rider assigned successfully!");
       closeModal();

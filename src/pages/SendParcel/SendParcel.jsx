@@ -6,11 +6,13 @@ import { useLoaderData } from "react-router";
 import UseAuth from "../../hooks/UseAuth";
 import UseAxiosSecure from "../../hooks/UseAxiosSecure";
 import Swal from "sweetalert2";
+import useTrackingLogger from "../../hooks/useTrackingLogger";
 
 const SendParcel = () => {
   const serviceCenter = useLoaderData();
   const { user } = UseAuth();
   const axiosSecure = UseAxiosSecure();
+  const logTracking = useTrackingLogger();
 
   const regions = Array.from(new Set(serviceCenter.map((sc) => sc.region)));
 
@@ -91,13 +93,14 @@ const SendParcel = () => {
   };
 
   const handleConfirm = () => {
+    const trackingId = `TRK-${Date.now()}`;
     const finalParcel = {
       ...submittedData,
       email: user?.email || "unknown",
       payment_status: "unpaid",
       cost,
       delivery_status: "not_collected",
-      tracking_id: `TRK-${Date.now()}`,
+      tracking_id: trackingId,
       creation_date: getFormattedDateTime(),
       cashed_out: false,
     };
@@ -108,6 +111,14 @@ const SendParcel = () => {
     axiosSecure.post("/parcels", finalParcel).then((res) => {
       console.log(res.data);
       if (res.data.insertedId) {
+
+        logTracking({
+          trackingId,
+          status: "submitted",
+          details: `created by ${user.displayName}`,
+          updated_by: user.email,
+        });
+
         Swal.fire({
           position: "top-end",
           icon: "success",
